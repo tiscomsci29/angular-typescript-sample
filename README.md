@@ -1,6 +1,13 @@
 # angular-typescript-sample
 
 
+```
+$ npm install
+$ npm start
+```
+
+# file
+
 **`file: package.json`**
 
 ```json

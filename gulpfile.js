@@ -1,21 +1,52 @@
 var gulp = require("gulp");
 var ts = require("gulp-typescript");
-var minify = require('gulp-minify');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
+var sourcemaps = require('gulp-sourcemaps');
+var del = require('del');
 var tsProject = ts.createProject("tsconfig.json");
 
 
-gulp.task("default", function () {
+
+var paths = {
+    scripts: ['client/js/**/*.coffee', '!client/external/**/*.coffee'],
+    images: 'client/img/**/*',
+    p_angular: 'public/angular'
+};
+
+
+
+// Not all tasks need to use streams
+// A gulpfile is just another node program and you can use any package available on npm
+gulp.task('clean', function() {
+    // You can use multiple globbing patterns as you would with `gulp.src`
+    return del([paths.p_angular]);
+});
+
+
+gulp.task('default', ['clean'], function() {
+    // Minify and copy all JavaScript (except vendor scripts)
+    // with sourcemaps all the way down
     return tsProject.src()
         .pipe(tsProject())
-        .js
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.p_angular));
+
+});
+
+
+/*gulp.task("default", function () {
+    tsProject.src()
+        .pipe(tsProject())
         .pipe(minify({
             ext:{
-                src:'.js',
-                min:'.min.js'
+                src:'.debug.js',
+                min:'.js'
             },
             exclude: ['tasks'], // Will not minify files in the dirs.
 
-            ignoreFiles: ['.combo.js', '-min.js'] // Will not minify files which matches the pattern.
+            ignoreFiles: ['.combo.js', '.min.js'] // Will not minify files which matches the pattern.
         }))
         .pipe(gulp.dest("public/angular")); // directory output
-});
+});*/
+
